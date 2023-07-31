@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+using API_Products.Data;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 
 namespace API_Products.Controllers
 {
@@ -7,20 +10,20 @@ namespace API_Products.Controllers
     public class ProductController : Controller
     {
 
+        private readonly DataContext _context;
+        public ProductController(DataContext context)
+        {
+            _context = context;
+        }
+
         [HttpGet]
         public async Task<ActionResult<List<Product>>> GetProducts()
         {
-
-            return new List<Product>
-            {
-                new Product
-                {
-                    Title = "Produto 1",
-                    Price = 20.0,
-                    Quantify = 32,
-                }
-            };
+            List<Product> products = await _context.Products.ToListAsync();
+            Console.WriteLine(products);
+            return Ok(products);
         }
+
         // GET: api/values
         //[HttpGet]
         //public IEnumerable<string> Get()
