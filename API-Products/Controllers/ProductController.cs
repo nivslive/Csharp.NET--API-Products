@@ -89,8 +89,49 @@ namespace API_Products.Controllers
 
         // PUT api/values/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
+        public async Task<ActionResult> Put(int id)
         {
+
+            Product? product = await _context.Products.FindAsync(id);
+
+            if(product == null)
+            {
+                return NotFound("Not exists that product on db");
+            }
+
+            string? titleRequested = Request.Form["title"],
+                    quantifyRequested = Request.Form["quantify"],
+                    priceRequested = Request.Form["price"];
+
+
+            if (titleRequested == null)
+            {
+                return NotFound("Left title data!");
+            }
+
+            if (quantifyRequested == null)
+            {
+                return NotFound("left quantify data!");
+            }
+
+            if (priceRequested == null)
+            {
+                return NotFound("left price data!");
+            }
+            string title = titleRequested;
+            int quantify = int.Parse(quantifyRequested);
+            double price = double.Parse(priceRequested);
+
+            product.Title = title;
+            product.Quantify = quantify;
+            product.Price = price;
+
+            // Save the changes to the database.
+            await _context.SaveChangesAsync();
+
+            // Return a success message.
+            return Ok();
+
         }
 
         // DELETE api/values/5
