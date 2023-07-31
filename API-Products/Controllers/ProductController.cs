@@ -3,6 +3,7 @@
 using API_Products.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using Azure.Core;
 
 namespace API_Products.Controllers
 {
@@ -11,6 +12,7 @@ namespace API_Products.Controllers
     {
 
         private readonly DataContext _context;
+
         public ProductController(DataContext context)
         {
             _context = context;
@@ -43,8 +45,39 @@ namespace API_Products.Controllers
 
         // POST api/values
         [HttpPost]
-        public void Post([FromBody]string value)
+        public async Task<ActionResult> Post([FromBody] string value)
         {
+
+            string? quantifyRequested = Request.Form["quantify"],
+                    priceRequested = Request.Form["price"];
+
+
+            if (quantifyRequested == null)
+            {
+                return NotFound("left quantify data!");
+            }
+
+            if(priceRequested == null)
+            {
+                return NotFound("left price data!");
+            }
+
+            int quantify = int.Parse(quantifyRequested);
+            double price = double.Parse(priceRequested);
+
+            // Create a new product.
+            Product product = new()
+            {
+                Title = value,
+                Quantify = quantify,
+                Price = price
+            };
+
+            // Save the product to the database.
+            await _context.Products.AddAsync(product);
+            await _context.SaveChangesAsync();
+
+            return Ok();
         }
 
         // PUT api/values/5
