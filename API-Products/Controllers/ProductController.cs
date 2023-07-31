@@ -25,17 +25,20 @@ namespace API_Products.Controllers
         }
 
         // GET: api/values
-        //[HttpGet]
-        //public IEnumerable<string> Get()
-        //{
-        //    return new string[] { "value1", "value2" };
-        //}
-
-        // GET api/values/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        [HttpGet("product/{id}")]
+        public async Task<ActionResult<Product>> Get(int id)
         {
-            return "value";
+            Product? product = await _context.Products.FindAsync(id);
+
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            // Print the product in the console.
+            Console.WriteLine(product);
+
+            return Ok(product);
         }
 
         // POST api/values
