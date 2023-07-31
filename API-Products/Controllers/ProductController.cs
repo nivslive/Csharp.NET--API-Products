@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using API_Products;
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace API_Products.Controllers
