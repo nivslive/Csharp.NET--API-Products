@@ -1,10 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 using API_Products.Data;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using Azure.Core;
-using API_Products.Migrations;
 
 namespace API_Products.Controllers
 {
