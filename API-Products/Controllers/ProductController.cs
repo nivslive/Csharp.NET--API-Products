@@ -4,6 +4,7 @@ using API_Products.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using Azure.Core;
+using API_Products.Migrations;
 
 namespace API_Products.Controllers
 {
@@ -48,9 +49,15 @@ namespace API_Products.Controllers
         public async Task<ActionResult> Post([FromBody] string value)
         {
 
-            string? quantifyRequested = Request.Form["quantify"],
+            string? titleRequested = Request.Form["title"],
+                    quantifyRequested = Request.Form["quantify"],
                     priceRequested = Request.Form["price"];
 
+
+            if(titleRequested == null)
+            {
+                return NotFound("Left title data!");
+            }
 
             if (quantifyRequested == null)
             {
@@ -61,14 +68,14 @@ namespace API_Products.Controllers
             {
                 return NotFound("left price data!");
             }
-
+            string title = titleRequested;
             int quantify = int.Parse(quantifyRequested);
             double price = double.Parse(priceRequested);
 
             // Create a new product.
             Product product = new()
             {
-                Title = value,
+                Title = title,
                 Quantify = quantify,
                 Price = price
             };
@@ -88,8 +95,27 @@ namespace API_Products.Controllers
 
         // DELETE api/values/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<ActionResult> Delete(int id)
         {
+            // Get the product from the database.
+            Product? product = new()
+            {
+                Id = id,
+            };
+
+            // If the product is not found, return a 404 Not Found response.
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            // Delete the product from the database.
+            //_context.Products.Attach(product);
+            _context.Products.Remove(product);
+            await _context.SaveChangesAsync();
+
+            // Return a success message.
+            return Ok();
         }
     }
 }
